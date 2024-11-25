@@ -1,0 +1,75 @@
+.mention {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.mentionSuggestions {
+  border-top: 1px solid #eee;
+  background: #fff;
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  transform: translateY(calc(-100% - 30px)) !important;
+  position: absolute;
+  width: 300px;
+  --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.mentionSuggestionsEntryContainer {
+  display: table;
+  width: 100%;
+}
+
+.mentionSuggestionsEntryContainerLeft,
+.mentionSuggestionsEntryContainerRight {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.mentionSuggestionsEntryContainerRight {
+  width: 100%;
+  padding-left: 8px;
+}
+
+.mentionSuggestionsEntry {
+  padding: 7px 10px 3px 10px;
+  transition: background-color 0.4s cubic-bezier(0.27, 1.27, 0.48, 0.56);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mentionSuggestionsEntry:active {
+  background-color: #cce7ff;
+}
+
+.mentionSuggestionsEntryFocused {
+  composes: mentionSuggestionsEntry;
+  background-color: #e6f3ff;
+}
+
+.mentionSuggestionsEntryText,
+.mentionSuggestionsEntryTitle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mentionSuggestionsEntryText {
+}
+
+.mentionSuggestionsEntryTitle {
+  font-size: 80%;
+  color: #a7a7a7;
+}
+
+.mentionSuggestionsEntryAvatar {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
