@@ -21,6 +21,22 @@ exports.deleteGroupMember = (req, res, next) => {
     }
 };
 
+exports.addGroupAdmin = (req, res, next) => {
+    if (req.body && req.body.memberId && req.body.groupId) {
+        next();
+    } else {
+        return res.status(400).json({ message: "Requested data is invalid!" });
+    }
+};
+
+exports.removeGroupAdmin = (req, res, next) => {
+    if (req.body && req.body.memberId && req.body.groupId) {
+        next();
+    } else {
+        return res.status(400).json({ message: "Requested data is invalid!" });
+    }
+};
+
 exports.updateGroup = (req, res, next) => {
     if (req.body && req.body.name && req.body.description && req.body.rules) {
         next();

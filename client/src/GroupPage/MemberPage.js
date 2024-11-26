@@ -17,18 +17,36 @@ class MemberPage extends Component {
   render() {
     const {
       currentGroup,
+      currentGroupAdmins,
       user,
       members,
       loadingMembers,
       groupOwner,
       dispatch,
     } = this.props;
-
+    const currentGroupAdminsArray = currentGroupAdmins.map((item) => {
+      return item.userId;
+    });
+    console.log(currentGroupAdmins);
     const handleDeleteMember = (id) => {
       dispatch(groupActions.deleteMember(currentGroup._id, id));
       let memberIds = currentGroup.members.map((member) => member.user);
       dispatch(groupActions.getGroupMembers(currentGroup._id, memberIds));
-      toast.success('Delete successfully');
+      toast.success("Delete successfully");
+    };
+
+    const handleAddAdminPermission = (id) => {
+      dispatch(groupActions.addAdmin(currentGroup._id, id));
+      let memberIds = currentGroup.members.map((member) => member.user);
+      dispatch(groupActions.getGroupMembers(currentGroup._id, memberIds));
+      toast.success("Remove admin permission successfully");
+    };
+
+    const handleRemoveAdminPermission = (id) => {
+      dispatch(groupActions.removeAdmin(currentGroup._id, id));
+      let memberIds = currentGroup.members.map((member) => member.user);
+      dispatch(groupActions.getGroupMembers(currentGroup._id, memberIds));
+      toast.success("Add admin permission successfully");
     };
 
     if (loadingMembers) {
@@ -48,27 +66,50 @@ class MemberPage extends Component {
             Các thanh viên tham gia nhóm này sẽ hiển thị tại đây
           </p>
           {members.map((member) => {
-            if (member._id === groupOwner) {
+            if (currentGroupAdminsArray.includes(member._id)) {
               return (
                 <div
-                  key={member._id}
-                  className="flex items-center gap-4 py-4"
+                  className="flex justify-between items-center"
                   style={{
                     borderTop: "1px solid #591bc5",
                   }}
                 >
-                  <img
-                    src={`/images/profile-picture/100x100/${member.profilePicture}`}
-                    alt="avatar"
-                    className="w-[60px] h-[60px] rounded-full "
-                  />
-                  <div className="">
-                    <h1 className="text-xl">
-                      {`${member.firstName} ${member.lastName}`}{" "}
-                      {member._id === user._id && "(You)"}
-                    </h1>
-                    <span className="text-lg font-semibold">Quản trị viên</span>
+                  <div
+                    key={member._id}
+                    className="flex items-center gap-4 py-4"
+                  >
+                    <img
+                      src={`/images/profile-picture/100x100/${member.profilePicture}`}
+                      alt="avatar"
+                      className="w-[60px] h-[60px] rounded-full "
+                    />
+                    <div className="">
+                      <h1 className="text-xl">
+                        {`${member.firstName} ${member.lastName}`}{" "}
+                        {member._id === user._id && "(You)"}
+                      </h1>
+                      <span className="text-lg font-semibold">
+                        Quản trị viên
+                      </span>
+                    </div>
                   </div>
+                  {member._id !== user._id && member._id !== groupOwner._id && (
+                    <div>
+                      <Button
+                        className="!bg-[#591bc5] !text-white hover:opacity-80"
+                        onClick={() => handleRemoveAdminPermission(member._id)}
+                      >
+                        Remove Admin Permission
+                      </Button>
+
+                      <Button
+                        className="!bg-[#591bc5] !text-white hover:opacity-80"
+                        onClick={() => handleDeleteMember(member._id)}
+                      >
+                        Delete Member
+                      </Button>
+                    </div>
+                  )}
                 </div>
               );
             } else {
@@ -77,7 +118,7 @@ class MemberPage extends Component {
           })}
           <div>
             {members.map((member) => {
-              if (member._id !== groupOwner) {
+              if (!currentGroupAdminsArray.includes(member._id)) {
                 return (
                   <div
                     className="flex justify-between items-center"
@@ -108,6 +149,13 @@ class MemberPage extends Component {
                     <div>
                       <Button
                         className="!bg-[#591bc5] !text-white hover:opacity-80"
+                        onClick={() => handleAddAdminPermission(member._id)}
+                      >
+                        Add Admin Permission
+                      </Button>
+
+                      <Button
+                        className="!bg-[#591bc5] !text-white hover:opacity-80"
                         onClick={() => handleDeleteMember(member._id)}
                       >
                         Delete Member
@@ -134,6 +182,7 @@ const mapStateToProps = (state) => ({
   loadingMembers: state.groups.loadingMembers,
   groupOwner: state.groups.groupOwner,
   loadingDeleteMember: state.groups.loadingDeleteMember,
+  currentGroupAdmins: state.groups.currentGroupAdmins,
 });
 
 export default connect(mapStateToProps)(MemberPage);

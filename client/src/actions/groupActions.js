@@ -8,6 +8,8 @@ export const groupActions = {
   getGroups,
   getGroupDetail,
   addMember,
+  addAdmin,
+  removeAdmin,
   deleteMember,
   getGroupPosts,
   addGroupPost,
@@ -198,6 +200,66 @@ function deleteMember(groupId, memberId) {
   }
   function failure(error) {
     return { type: groupConstant.DELETE_MEMBER_FAILURE, error };
+  }
+}
+
+function addAdmin(groupId, memberId) {
+  return (dispatch) => {
+    dispatch(request());
+    groupService.addAdmin({ groupId, memberId }).then(
+      (res) => {
+        dispatch(success(res.data));
+        dispatch(
+          getGroupDetail({
+            initialFetch: false,
+            groupId,
+          })
+        );
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+      }
+    );
+  };
+
+  function request() {
+    return { type: groupConstant.ADD_ADMIN_REQUEST };
+  }
+  function success(data) {
+    return { type: groupConstant.ADD_ADMIN_SUCCESS, data };
+  }
+  function failure(error) {
+    return { type: groupConstant.ADD_ADMIN_FAILURE, error };
+  }
+}
+
+function removeAdmin(groupId, memberId) {
+  return (dispatch) => {
+    dispatch(request());
+    groupService.removeAdmin({ groupId, memberId }).then(
+      (res) => {
+        dispatch(success(res.data));
+        dispatch(
+          getGroupDetail({
+            initialFetch: false,
+            groupId,
+          })
+        );
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+      }
+    );
+  };
+
+  function request() {
+    return { type: groupConstant.DELETE_ADMIN_REQUEST };
+  }
+  function success(data) {
+    return { type: groupConstant.DELETE_ADMIN_SUCCESS, data };
+  }
+  function failure(error) {
+    return { type: groupConstant.DELETE_ADMIN_FAILURE, error };
   }
 }
 

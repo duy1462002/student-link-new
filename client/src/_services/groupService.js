@@ -4,6 +4,8 @@ export const groupService = {
   getGroup,
   getGroupDetail,
   addMember,
+  addAdmin,
+  removeAdmin,
   deleteMember,
   getGroupMembers,
   getGroupPosts,
@@ -133,6 +135,44 @@ function addMember(params) {
   };
 
   return fetch("/api/group/addMember", requestOptions)
+    .then(handleResponse)
+    .then((res) => {
+      return res;
+    });
+}
+
+function addAdmin(params) {
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: JSON.parse(localStorage.getItem("user")).token,
+    },
+    body: JSON.stringify({
+      ...params,
+    }),
+  };
+
+  return fetch("/api/group/addAdmin", requestOptions)
+    .then(handleResponse)
+    .then((res) => {
+      return res;
+    });
+}
+
+function removeAdmin(params) {
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: JSON.parse(localStorage.getItem("user")).token,
+    },
+    body: JSON.stringify({
+      ...params,
+    }),
+  };
+
+  return fetch("/api/group/removeAdmin", requestOptions)
     .then(handleResponse)
     .then((res) => {
       return res;

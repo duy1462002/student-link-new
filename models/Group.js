@@ -3,13 +3,22 @@ mongoose.Promise = global.Promise;
 
 const GroupSchema = new mongoose.Schema({
   owner: {
-    type: mongoose.Schema.ObjectId, //the owner of group
+    type: mongoose.Schema.ObjectId,
     ref: "User",
     required: true
   },
   members: [
     {
-      user: { //the list of members
+      user: {
+        type: mongoose.Schema.ObjectId,
+        required: true,
+        ref: "User"
+      }
+    }
+  ],
+  admins: [
+    {
+      userId: {
         type: mongoose.Schema.ObjectId,
         required: true,
         ref: "User"
@@ -18,7 +27,7 @@ const GroupSchema = new mongoose.Schema({
   ],
   posts: [
     {
-      user: { //the list of post in the group
+      user: {
         type: mongoose.Schema.ObjectId,
         required: true,
         ref: "Post"
@@ -59,6 +68,6 @@ const GroupSchema = new mongoose.Schema({
   }
 });
 
-GroupSchema.index({ hashtag: "text", name: "text"});
+GroupSchema.index({ hashtag: "text", name: "text" });
 
 module.exports = mongoose.model("Group", GroupSchema);

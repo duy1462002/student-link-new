@@ -44,6 +44,20 @@ router.post(
 );
 
 router.post(
+    "/addAdmin",
+    checkAuth,
+    groupValidator.addGroupAdmin, 
+    groupController.addGroupAdmin 
+);
+
+router.post(
+    "/removeAdmin",
+    checkAuth,
+    groupValidator.removeGroupAdmin, 
+    groupController.removeGroupAdmin 
+);
+
+router.post(
     "/groupDetail",
     checkAuth,
     groupController.getGroupDetail
