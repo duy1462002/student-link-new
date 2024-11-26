@@ -206,6 +206,117 @@ function deleteMemberFromGroup(req) {
         });
 }
 
+function addAdminToGroup(req) {
+    return Group.findById({ _id: req.body.groupId })
+        .then((foundGroup) => {
+            if (!foundGroup) {
+                return {
+                    code: 404,
+                    message: `The group ${req.body.groupId} not found!`
+                };
+            }
+
+            let isAuthorized =
+                foundGroup.owner == req.userData.userId ||
+                foundGroup.admins.find((admin) => admin.userId == req.userData.userId);
+
+            if (!isAuthorized) {
+                return {
+                    code: 403,
+                    message: `The user ${req.userData.userId} does not have permission to add admins to the group ${req.body.groupId}!`
+                };
+            }
+
+            if (foundGroup.admins.find((admin) => admin.userId == req.body.memberId)) {
+                return {
+                    code: 409,
+                    message: `The user ${req.body.memberId} is already an admin of the group ${req.body.groupId}!`
+                };
+            }
+
+            return Group.updateOne(
+                { _id: req.body.groupId },
+                { $addToSet: { admins: { userId: req.body.memberId } } }
+            )
+                .then(() => {
+                    return {
+                        code: 200,
+                        groupId: req.body.groupId,
+                        memberId: req.body.memberId,
+                        action: "added",
+                        message: "Admin added successfully!"
+                    };
+                })
+                .catch((err) => {
+                    console.error(err);
+                    return {
+                        code: 500,
+                        message: `Cannot add the user ${req.body.memberId} as an admin to the group ${req.body.groupId}!`
+                    };
+                });
+        });
+}
+
+function removeAdminFromGroup(req) {
+    return Group.findById({ _id: req.body.groupId })
+        .then((foundGroup) => {
+            if (!foundGroup) {
+                return {
+                    code: 404,
+                    message: `The group ${req.body.groupId} not found!`
+                };
+            }
+
+            let isAuthorized =
+                foundGroup.owner == req.userData.userId ||
+                foundGroup.admins.find((admin) => admin.userId == req.userData.userId);
+
+            if (!isAuthorized) {
+                return {
+                    code: 403,
+                    message: `The user ${req.userData.userId} does not have permission to remove admins from the group ${req.body.groupId}!`
+                };
+            }
+
+            if (!foundGroup.admins.find((admin) => admin.userId == req.body.memberId)) {
+                return {
+                    code: 409,
+                    message: `The user ${req.body.memberId} is not an admin of the group ${req.body.groupId}!`
+                };
+            }
+
+            // Prevent owner from being removed as admin
+            if (foundGroup.owner == req.body.memberId) {
+                return {
+                    code: 403,
+                    message: `The owner of the group ${req.body.groupId} cannot be removed as an admin!`
+                };
+            }
+
+            return Group.updateOne(
+                { _id: req.body.groupId },
+                { $pull: { admins: { userId: req.body.memberId } } }
+            )
+                .then(() => {
+                    return {
+                        code: 200,
+                        groupId: req.body.groupId,
+                        memberId: req.body.memberId,
+                        action: "removed",
+                        message: "Admin removed successfully!"
+                    };
+                })
+                .catch((err) => {
+                    console.error(err);
+                    return {
+                        code: 500,
+                        message: `Cannot remove the user ${req.body.memberId} as an admin from the group ${req.body.groupId}!`
+                    };
+                });
+        });
+}
+
+
 
 exports.upload = async (req, res, next) => {
     upload(req, res, (err) => {
@@ -242,6 +353,7 @@ exports.createGroup = (req, res) => {
             name: req.body.name,
             description: req.body.description,
             rules: req.body.rules,
+            admins: [req.userData]
         });
 
         group
@@ -303,6 +415,30 @@ exports.deleteGroupMember = (req, res) => {
         console.log(result);
         return res.status(result.code).json({ message: result.message });
     });
+};
+
+exports.addGroupAdmin = (req, res) => {
+    addAdminToGroup(req)
+        .then((result) => {
+            console.log(result);
+            return res.status(result.code).json({ message: result.message });
+        })
+        .catch((err) => {
+            console.error(err);
+            return res.status(500).json({ message: "Internal Server Error" });
+        });
+};
+
+exports.removeGroupAdmin = (req, res) => {
+    removeAdminFromGroup(req)
+        .then((result) => {
+            console.log(result);
+            return res.status(result.code).json({ message: result.message });
+        })
+        .catch((err) => {
+            console.error(err);
+            return res.status(500).json({ message: "Internal Server Error" });
+        });
 };
 
 exports.getGroupDetail = (req, res) => {

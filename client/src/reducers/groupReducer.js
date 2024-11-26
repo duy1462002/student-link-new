@@ -7,6 +7,7 @@ const initialState = {
   posts: [],
   postLikes: [],
   members: [],
+  currentGroupAdmins: [],
   groupOwner: null,
   coverImage: null,
   loadingMembers: true,
@@ -76,6 +77,7 @@ export function groups(state = initialState, action) {
         fetchingGroupDetail: false,
         currentGroup: action.data,
         coverImage: action.data.coverImage,
+        currentGroupAdmins: action.data.admins,
         error: null,
       };
     case groupConstant.FETCH_GROUP_POSTS_REQUEST:
@@ -127,6 +129,39 @@ export function groups(state = initialState, action) {
         loadingAddMember: false,
         error: action.error,
       };
+
+      case groupConstant.ADD_ADMIN_REQUEST:
+        return {
+          ...state,
+          error: null,
+        };
+      case groupConstant.ADD_ADMIN_SUCCESS:
+        return {
+          ...state,
+          error: null,
+        };
+      case groupConstant.ADD_ADMIN_FAILURE:
+        return {
+          ...state,
+          error: action.error,
+        };
+
+        case groupConstant.DELETE_ADMIN_REQUEST:
+          return {
+            ...state,
+            error: null,
+          };
+        case groupConstant.DELETE_ADMIN_SUCCESS:
+          return {
+            ...state,
+            error: null,
+          };
+        case groupConstant.DELETE_ADMIN_FAILURE:
+          return {
+            ...state,
+            error: action.error,
+          };
+  
 
     case groupConstant.DELETE_MEMBER_REQUEST:
       return {
