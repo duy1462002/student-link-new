@@ -313,8 +313,8 @@ class PostDetail extends Component {
                                     </h2>
                                     <p className="text-gray-600 mb-3"></p>
                                     <a
-                                        // href={require(`../../../../public/documents/${post.document}`)}
-                                        // download={post.document}
+                                        href={require(`../../../../public/documents/${post.document}`)}
+                                        download={post.document}
                                         className="inline-flex items-center gap-3 px-4 py-2 bg-[#591bc5] text-white font-semibold rounded-lg shadow-md hover:opacity-90 hover-text-white"
                                     >
                                         <i className="fa-solid fa-file-arrow-down"></i>

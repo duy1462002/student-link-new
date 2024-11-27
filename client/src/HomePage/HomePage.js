@@ -11,12 +11,17 @@ class HomePage extends Component {
   render() {
     return (
       <div id="homepage-container" className="flex flex-row-reverse">
-        <div id="left-container" className="shadow-lg border card-border-primary overflow-hidden">
+        <div
+          id="left-container"
+          className="shadow-lg border card-border-primary overflow-hidden"
+        >
           <NewUsersList></NewUsersList>
         </div>
 
-        <div id="right" style={{marginRight: '23.25rem'}} className="w-full">
-          <div className="w-full"><Feed /></div>
+        <div id="right" style={{ marginRight: "23.25rem" }} className="w-full">
+          <div className="w-full">
+            <Feed />
+          </div>
         </div>
       </div>
     );

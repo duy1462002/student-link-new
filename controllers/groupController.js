@@ -486,6 +486,7 @@ exports.getPosts = (req, res) => {
                                 "author._id": 1,
                                 "author.username": 1,
                                 "author.profilePicture": 1,
+                                document: 1
                             },
                         },
                     ],
@@ -529,6 +530,7 @@ exports.getPosts = (req, res) => {
                     "author._id": 1,
                     "author.username": 1,
                     "author.profilePicture": 1,
+                    document: 1
                 },
             },
         ];

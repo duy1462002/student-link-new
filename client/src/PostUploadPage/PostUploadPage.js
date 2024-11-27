@@ -314,9 +314,6 @@ class PostUploadPage extends Component {
         const { MentionSuggestions } = this.mentionPlugin;
         const plugins = [this.mentionPlugin];
         // end mention and tagging
-
-        console.log(document);
-
         const renderDivs = divs.map((div) => (
             <div
                 key={div.id}
@@ -570,7 +567,7 @@ class PostUploadPage extends Component {
                                 <input
                                     id="photo"
                                     type="file"
-                                    accept=".pdf,.doc,.docx,.txt,.xls,.xlsx,.ppt,.pptx"
+                                    accept=".pdf,.doc,.docx,.txt,.ppt,.pptx"
                                     hidden
                                     ref={this.fileInputDocumentRef}
                                     onChange={this.handleDocumentChange}

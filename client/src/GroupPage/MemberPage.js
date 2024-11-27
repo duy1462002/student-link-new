@@ -27,7 +27,9 @@ class MemberPage extends Component {
     const currentGroupAdminsArray = currentGroupAdmins.map((item) => {
       return item.userId;
     });
-    console.log(currentGroupAdmins);
+
+    let isGroupAdmin = currentGroupAdminsArray.includes(user._id) || false;
+
     const handleDeleteMember = (id) => {
       dispatch(groupActions.deleteMember(currentGroup._id, id));
       let memberIds = currentGroup.members.map((member) => member.user);
@@ -93,23 +95,27 @@ class MemberPage extends Component {
                       </span>
                     </div>
                   </div>
-                  {member._id !== user._id && member._id !== groupOwner._id && (
-                    <div>
-                      <Button
-                        className="!bg-[#591bc5] !text-white hover:opacity-80"
-                        onClick={() => handleRemoveAdminPermission(member._id)}
-                      >
-                        Remove Admin Permission
-                      </Button>
+                  {isGroupAdmin &&
+                    member._id !== user._id &&
+                    member._id !== groupOwner && (
+                      <div>
+                        <Button
+                          className="!bg-[#591bc5] !text-white hover:opacity-80"
+                          onClick={() =>
+                            handleRemoveAdminPermission(member._id)
+                          }
+                        >
+                          Remove Admin Permission
+                        </Button>
 
-                      <Button
-                        className="!bg-[#591bc5] !text-white hover:opacity-80"
-                        onClick={() => handleDeleteMember(member._id)}
-                      >
-                        Delete Member
-                      </Button>
-                    </div>
-                  )}
+                        <Button
+                          className="!bg-[#591bc5] !text-white hover:opacity-80"
+                          onClick={() => handleDeleteMember(member._id)}
+                        >
+                          Delete Member
+                        </Button>
+                      </div>
+                    )}
                 </div>
               );
             } else {
@@ -146,21 +152,23 @@ class MemberPage extends Component {
                       </div>
                     </div>
 
-                    <div>
-                      <Button
-                        className="!bg-[#591bc5] !text-white hover:opacity-80"
-                        onClick={() => handleAddAdminPermission(member._id)}
-                      >
-                        Add Admin Permission
-                      </Button>
+                    {isGroupAdmin && (
+                      <div>
+                        <Button
+                          className="!bg-[#591bc5] !text-white hover:opacity-80"
+                          onClick={() => handleAddAdminPermission(member._id)}
+                        >
+                          Add Admin Permission
+                        </Button>
 
-                      <Button
-                        className="!bg-[#591bc5] !text-white hover:opacity-80"
-                        onClick={() => handleDeleteMember(member._id)}
-                      >
-                        Delete Member
-                      </Button>
-                    </div>
+                        <Button
+                          className="!bg-[#591bc5] !text-white hover:opacity-80"
+                          onClick={() => handleDeleteMember(member._id)}
+                        >
+                          Delete Member
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 );
               } else {

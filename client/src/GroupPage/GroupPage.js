@@ -35,7 +35,7 @@ class GroupPage extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     if (this.props.match.params.groupId !== prevProps.match.params.groupId) {
       this.fetchGroupDetail();
       dispatch(
@@ -49,14 +49,17 @@ class GroupPage extends Component {
       this.fetchGroupDetail();
     }
 
-    if (prevProps.loadingCoverImage === true && this.props.loadingCoverImage === false) {
+    if (
+      prevProps.loadingCoverImage === true &&
+      this.props.loadingCoverImage === false
+    ) {
       this.fetchGroupDetail();
     }
   }
 
   componentWillUnmount() {
     window.removeEventListener("scroll", this.handleScroll);
-    this.props.dispatch({type: 'CLEAR_POSTS_GROUP'});
+    this.props.dispatch({ type: "CLEAR_POSTS_GROUP" });
   }
 
   fetchGroupDetail = () => {
@@ -75,14 +78,21 @@ class GroupPage extends Component {
       currentGroup,
       coverImage,
       loadingCoverImage,
+      currentGroupAdmins,
       user,
-      posts
+      posts,
     } = this.props;
+    const currentGroupAdminsArray = currentGroupAdmins.map((item) => {
+      return item.userId;
+    });
 
+    let isGroupAdmin = currentGroupAdminsArray.includes(user._id);
     const { path, url } = this.props.match;
     const pathname = window.location.pathname;
     return (
-      <div className={`relative min-h-[800px] ${posts.length && '!min-h-[1300px]'}`}>
+      <div
+        className={`relative min-h-[800px]`}
+      >
         {fetchingGroupDetail ? (
           <SpinnerLoading size={180} />
         ) : (
@@ -101,7 +111,7 @@ class GroupPage extends Component {
                     loading="lazy"
                   />
                   <div className="absolute bottom-4 right-6">
-                    {currentGroup.owner === user._id && <EditCoverModal />}
+                    {isGroupAdmin && <EditCoverModal />}
                   </div>
                 </div>
               )}
@@ -192,6 +202,7 @@ const mapStateToProps = (state) => ({
   loadingCoverImage: state.groups.loadingCoverImage,
   user: state.user.data,
   updating: state.groups.updating,
+  currentGroupAdmins: state.groups.currentGroupAdmins,
 });
 
 export default connect(mapStateToProps)(GroupPage);

@@ -106,6 +106,7 @@ function addGroupPost(groupData) {
   formData.append("coordinates", groupData.coordinates);
   formData.append("locationName", groupData.locationName);
   formData.append("tags", JSON.stringify(groupData.tags));
+  formData.append("document", groupData.document);
   const requestOptions = {
     method: "POST",
     headers: {

@@ -37,14 +37,16 @@ class GroupPostFormModal extends Component {
       openAspect: false,
       isCrop: true,
       previewPhoto: null,
+      document: null,
       //tags
       x: 50,
       y: 50,
       valueTags: "",
       displayInput: "none",
-      submitOnClick: false
+      submitOnClick: false,
     };
     this.fileInputRef = React.createRef();
+    this.fileInputDocumentRef = React.createRef();
   }
 
   //tags
@@ -74,7 +76,10 @@ class GroupPostFormModal extends Component {
     const { x, y, valueTags } = this.state;
     const { dispatch } = this.props;
     if (valueTags !== "") {
-      dispatch({ type: "ADD_IMAGE_TAG", div: { x, y, value: valueTags, id: uuid.v4() } });
+      dispatch({
+        type: "ADD_IMAGE_TAG",
+        div: { x, y, value: valueTags, id: uuid.v4() },
+      });
       this.setState({
         submitOnClick: true,
         displayInput: "none",
@@ -106,12 +111,30 @@ class GroupPostFormModal extends Component {
     }
   };
 
+  handleDocumentChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            reader.readAsDataURL(file);
+        };
+    }
+    this.setState({
+        document: file,
+    });
+};
+
   handleChangeImage = () => {
     this.fileInputRef.current.click();
   };
 
+  handleChangeDocument = (e) => {
+    e.preventDefault();
+    this.fileInputDocumentRef.current.click();
+};
+
   handleLocationSelect = (location) => {
-    console.log('location:', location);
+    console.log("location:", location);
     this.setState({
       locationName: location.locationName,
       coordinates: location.coordinates,
@@ -121,7 +144,7 @@ class GroupPostFormModal extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     // this.showCroppedImage();
-    const { description, locationName, coordinates, croppedImage } = this.state;
+    const { description, locationName, coordinates, croppedImage, document } = this.state;
     const { user, currentGroup, dispatch, divs } = this.props;
     const data = {
       description,
@@ -130,9 +153,11 @@ class GroupPostFormModal extends Component {
       coordinates,
       author: user._id,
       groupId: currentGroup._id,
-      tags: divs
+      tags: divs,
+      document
     };
-
+    console.log(data);
+    
     dispatch(groupActions.addGroupPost(data));
   };
 
@@ -190,8 +215,16 @@ class GroupPostFormModal extends Component {
 
   render() {
     const { user, loadingAddPost, divs } = this.props;
-    const { open, photo, previewPhoto, description, toggleCheckIn, isCrop, locationName } =
-      this.state;
+    const {
+      open,
+      photo,
+      previewPhoto,
+      description,
+      toggleCheckIn,
+      isCrop,
+      locationName,
+      document
+    } = this.state;
     const { x, y, submitOnClick } = this.state;
     const renderDivs = divs.map((div) => (
       <div
@@ -408,7 +441,10 @@ class GroupPostFormModal extends Component {
                 </div>
                 <div className="flex items-center gap-2 p-3 bg-gray-300 rounded-lg  text-[14px] mt-4 cursor-pointer">
                   <h1>Add location to your post:</h1>
-                  <div className="flex items-center gap-1" onClick={this.handleToggleCheckIn}>
+                  <div
+                    className="flex items-center gap-1"
+                    onClick={this.handleToggleCheckIn}
+                  >
                     <Popup
                       content="Check in"
                       trigger={
@@ -419,6 +455,27 @@ class GroupPostFormModal extends Component {
                     />
                     <h1>{locationName}</h1>
                   </div>
+                </div>
+
+                <div className="flex items-center gap-2 p-3 rounded-lg  text-[14px] mt-4 cursor-pointer">
+                  <input
+                    id="photo"
+                    type="file"
+                    accept=".pdf,.doc,.docx,.txt,.ppt,.pptx"
+                    hidden
+                    ref={this.fileInputDocumentRef}
+                    onChange={this.handleDocumentChange}
+                  />
+
+                  <Button
+                    type="submit"
+                    className="!bg-[#591bc5] !text-white relative w-50 h-[32px]"
+                    onClick={this.handleChangeDocument}
+                  >
+                    Select document
+                  </Button>
+
+                  <h3>{document !== null ? document.name : null}</h3>
                 </div>
 
                 <div className="flex items-center justify-center py-4">
@@ -441,7 +498,7 @@ class GroupPostFormModal extends Component {
                   onClick={this.handleToggleCheckIn}
                 >
                   <h1 className=" text-[16px] font-medium flex-1 text-center">
-                  Set Location
+                    Set Location
                   </h1>
                   <Popup
                     content="Check in"
