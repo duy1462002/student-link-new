@@ -36,6 +36,13 @@ function connect() {
         dispatch(request({ ...data, sent: false }));
       });
 
+      socket.on("fileMessage", data => {
+        function request(message) {
+          return { type: chatConstants.SEND_MESSAGE_REQUEST, message };
+        }
+        dispatch(request({ ...data, sent: false }));
+      });
+
       socket.on("imageMessage", data => {
         function success(message) {
           return { type: chatConstants.SEND_MESSAGE_SUCCESS, message };

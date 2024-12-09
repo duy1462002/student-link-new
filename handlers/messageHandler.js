@@ -26,6 +26,16 @@ exports.sendImageMessageRequest = (req, data) => {
   });
 };
 
+exports.sendFileMessage = (req, data) => {
+  const io = req.app.get("socketio");
+
+  const { message, receiver } = { ...data };
+  io.sockets.in(receiver._id).emit("fileMessage", {
+    ...message,
+    receiver: receiver._id
+  });
+};
+
 exports.sendImageMessage = (req, data) => {
   const io = req.app.get("socketio");
 

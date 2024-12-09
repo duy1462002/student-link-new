@@ -24,6 +24,15 @@ router.post(
 );
 
 router.post(
+  "/sendFile",
+  checkAuth, // Kiểm tra xác thực
+  chatController.upload, // Middleware xử lý upload tài liệu
+  chatValidator.sendFile, // Validator cho việc gửi file
+  chechRoom, // Middleware kiểm tra quyền truy cập vào room
+  chatController.createFileMessage // Controller tạo tin nhắn file
+);
+
+router.post(
   "/call",
   checkAuth,
   chatValidator.handleCall,

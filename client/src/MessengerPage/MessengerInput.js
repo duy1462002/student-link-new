@@ -14,7 +14,7 @@ import { Popup } from "semantic-ui-react";
 
 const imageMaxSize = 10485760; // bytes 10MB
 const acceptedFileTypes =
-  "image/x-png, image/png, image/jpg, image/jpeg, image/gif";
+  "image/x-png, image/png, image/jpg, image/jpeg, image/gif, application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => {
   return item.trim();
 });
@@ -93,41 +93,62 @@ class MessengerInput extends Component {
       userId,
     } = this.props;
     const files = event.target.files;
+
     if (files && files.length > 0) {
+      const currentFile = files[0];
+      const isImage = currentFile.type.startsWith("image");
       const isVerified = this.verifyFile(files);
+
       if (isVerified) {
-        // imageBase64Data
-        const currentFile = files[0];
-        const myFileItemReader = new FileReader();
-        myFileItemReader.addEventListener(
-          "load",
-          () => {
-            // console.log(myFileItemReader.result)
-            const myResult = myFileItemReader.result;
-            const imgSrcExt = extractImageFileExtensionFromBase64(myResult);
-            const myFilename = "image." + imgSrcExt;
-            const myNewFile = base64StringtoFile(myResult, myFilename);
-            const fd = new FormData();
-            const uniqueId = uuid();
-            fd.append("receiver", JSON.stringify(currentRoom.user));
-            fd.append("roomId", roomId);
-            fd.append("uuid", uniqueId);
-            fd.append("photo", myNewFile, myNewFile.name);
+        const uniqueId = uuid();
 
-            dispatch(
-              chatActions.sendImage(fd, {
-                receiver: currentRoom.user,
-                value: "Image",
-                sender: userId,
-                roomId,
-                uuid: uniqueId,
-              })
-            );
-          },
-          false
-        );
+        if (isImage) {
+          const myFileItemReader = new FileReader();
+          myFileItemReader.addEventListener(
+            "load",
+            () => {
+              const myResult = myFileItemReader.result;
+              const imgSrcExt = extractImageFileExtensionFromBase64(myResult);
+              const myFilename = "image." + imgSrcExt;
+              const myNewFile = base64StringtoFile(myResult, myFilename);
+              const fd = new FormData();
+              fd.append("receiver", JSON.stringify(currentRoom.user));
+              fd.append("roomId", roomId);
+              fd.append("uuid", uniqueId);
+              fd.append("photo", myNewFile, myNewFile.name);
 
-        myFileItemReader.readAsDataURL(currentFile);
+              dispatch(
+                chatActions.sendImage(fd, {
+                  receiver: currentRoom.user,
+                  value: "Image",
+                  sender: userId,
+                  roomId,
+                  uuid: uniqueId,
+                })
+              );
+            },
+            false
+          );
+          myFileItemReader.readAsDataURL(currentFile);
+        } else {
+          // Handle document upload
+          const document = currentFile;
+          const fd = new FormData();
+          fd.append("receiver", JSON.stringify(currentRoom.user));
+          fd.append("roomId", roomId);
+          fd.append("uuid", uniqueId);
+          fd.append("document", currentFile, currentFile.name);
+
+          dispatch(
+            chatActions.sendFile(fd, {
+              receiver: currentRoom.user,
+              document: document,
+              sender: userId,
+              roomId,
+              uuid: uniqueId,
+            })
+          );
+        }
       }
     }
   };
@@ -142,7 +163,7 @@ class MessengerInput extends Component {
       if (!acceptedFileTypesArray.includes(currentFileType)) {
         dispatch(
           alertActions.error(
-            "This file is not allowed. Only images are allowed."
+            "This file is not allowed. Only images and documents are allowed."
           )
         );
 
@@ -152,9 +173,7 @@ class MessengerInput extends Component {
       if (currentFileSize > imageMaxSize) {
         dispatch(
           alertActions.error(
-            "This file is not allowed. " +
-              currentFileSize +
-              " bytes is too large"
+            `This file is too large. ${currentFileSize} bytes exceeds the limit of ${imageMaxSize} bytes.`
           )
         );
         return false;
@@ -186,42 +205,55 @@ class MessengerInput extends Component {
             />
             <button
               className="top-1 !bg-transparent !mr-0 !px-3 !py-2 absolute"
-              style={{ right: "100px" }}
+              style={{ right: "145px", top: "4px" }}
             >
               <i className="fa-solid fa-paper-plane text-xl text-[#591bc5] hover:text-purple-950 transition"></i>
             </button>
           </form>
 
-          <label className="!bg-transparent">
-            <input
-              type="file"
-              accept={acceptedFileTypes}
-              multiple={false}
-              onChange={this.handleFileSelect}
-            />
-            <i
-              className="fa fa-paperclip text-[#591bc5] hover:text-purple-950 transition"
-              aria-hidden="true"
-            ></i>
-          </label>
+          <div className="flex items-center justify-between absolute top-0 right-0">
+            {/* <label className="!bg-transparent">
+              <input
+                type="file"
+                accept={acceptedFileTypes}
+                multiple={false}
+                onChange={this.handleFileSelect}
+              />
+              <i
+                className=" fa-solid fa-image text-[#591bc5] hover:text-purple-950 transition"
+                aria-hidden="true"
+              ></i>
+            </label> */}
 
-          <Popup
-            trigger={
-              <button
-                className="!bg-transparent"
-              >
-                <i
-                  className="fa-regular fa-face-smile text-[#591bc5] hover:text-purple-950 transition"
-                  aria-hidden="true"
-                ></i>
-              </button>
-            }
-            content={<Picker native={true} onSelect={this.addEmoji} />}
-            pinned
-            on="click"
-            basic
-            style={{ padding: "0", border: "0" }}
-          />
+            <label className="!bg-transparent">
+              <input
+                type="file"
+                accept={acceptedFileTypes}
+                multiple={false}
+                onChange={this.handleFileSelect}
+              />
+              <i
+                className="fa fa-paperclip text-[#591bc5] hover:text-purple-950 transition"
+                aria-hidden="true"
+              ></i>
+            </label>
+
+            <Popup
+              trigger={
+                <button className="!bg-transparent">
+                  <i
+                    className="fa-regular fa-face-smile text-[#591bc5] hover:text-purple-950 transition"
+                    aria-hidden="true"
+                  ></i>
+                </button>
+              }
+              content={<Picker native={true} onSelect={this.addEmoji} />}
+              pinned
+              on="click"
+              basic
+              style={{ padding: "0", border: "0" }}
+            />
+          </div>
         </div>
       </div>
     );

@@ -1954,7 +1954,7 @@ body {
     font-family: "proxima-nova", "Source Sans Pro", sans-serif;
     float: left;
     border: none;
-    width: calc(100% - 100px);
+    width: calc(100% - 140px);
     padding: 11px 32px 10px 16px;
     font-size: 0.8em;
     color: #32465a;
@@ -1971,7 +1971,7 @@ body {
 }
 
 #frame .content .message-input .wrap button {
-    float: right;
+    
     border: none;
     width: 50px;
     padding: 12px 0;
@@ -1981,7 +1981,7 @@ body {
 }
 
 #frame .content .message-input .wrap label {
-    float: right;
+    
     border: none;
     width: 50px;
     padding: 12px 0;
