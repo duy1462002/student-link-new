@@ -82,7 +82,7 @@ exports.sendFile = (req, res, next) => {
     receiver: Joi.objectId().required()
   });
   const { roomId, uuid, receiver } = req.body;
-  const { error } = schema.validate({ roomId, uuid, receiver });
+  const { error } = schema.validate({ roomId, uuid, receiver: JSON.parse(receiver)._id });
   if (error) {
     return res.status(400).json({ message: error.message });
   }

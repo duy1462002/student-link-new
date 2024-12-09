@@ -37,12 +37,34 @@ function ShowImage({ show, image }) {
   );
 }
 
+function Document({ document }) {
+  return <div
+    className="w-full bg-white"
+    style={{
+      borderBottom: "1px solid #ccc",
+    }}
+  >
+    <div className="p-3">
+      <a
+        href={require(`../../../public/documents/chat-documents/${document}`)}
+        download={document}
+        className="inline-flex items-center gap-3 px-4 py-2 bg-[#591bc5] text-white font-semibold rounded-lg shadow-md hover:opacity-90 hover-text-white"
+      >
+        <i className="fa-solid fa-file-arrow-down"></i>
+        Download {document}
+      </a>
+    </div>
+  </div>
+}
+
 const MessengerMessages = ({
   message,
   userId,
   profilePicture,
   currentRoom,
 }) => {
+  console.log(message);
+  
   if (message.sender === userId) {
     if (message.sent === false) {
       return (
@@ -77,6 +99,23 @@ const MessengerMessages = ({
           />
         </li>
       );
+    } else if (message.messageType === "document") {
+      return (
+        <li className="replies">
+          <ShowImage
+            image={profilePicture}
+            show={message.picture}
+          ></ShowImage>
+          <Popup
+            content={
+              dayjs(message.createdAt).fromNow() + ", seen:" + message.read
+            }
+            trigger={
+              <Document document={message.file}/>
+            }
+          />
+        </li>
+      )
     } else {
       return (
         <li className="replies">
@@ -143,6 +182,23 @@ const MessengerMessages = ({
           />
         </li>
       );
+    } else if (message.messageType === "document") {
+      return (
+        <li className="sent">
+          <ShowImage
+            image={currentRoom.user.profilePicture}
+            show={message.picture}
+          ></ShowImage>
+          <Popup
+            content={
+              dayjs(message.createdAt).fromNow() + ", seen:" + message.read
+            }
+            trigger={
+              <Document document={message.file}/>
+            }
+          />
+        </li>
+      )
     } else {
       return (
         <li className="sent">

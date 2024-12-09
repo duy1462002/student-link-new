@@ -123,7 +123,7 @@ class MessengerContent extends Component {
 
             <CallingModal></CallingModal>
             <Label basic color="red" pointing="left">
-              This isn't working.
+              This isn't working yet.
             </Label>
           </div>
         </div>

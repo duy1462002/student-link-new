@@ -115,7 +115,7 @@ class MessengerInput extends Component {
               fd.append("receiver", JSON.stringify(currentRoom.user));
               fd.append("roomId", roomId);
               fd.append("uuid", uniqueId);
-              fd.append("photo", myNewFile, myNewFile.name);
+              fd.append("image", myNewFile);
 
               dispatch(
                 chatActions.sendImage(fd, {
@@ -137,12 +137,13 @@ class MessengerInput extends Component {
           fd.append("receiver", JSON.stringify(currentRoom.user));
           fd.append("roomId", roomId);
           fd.append("uuid", uniqueId);
-          fd.append("document", currentFile, currentFile.name);
+          fd.append("document", currentFile);
 
           dispatch(
             chatActions.sendFile(fd, {
               receiver: currentRoom.user,
               document: document,
+              value: "Document",
               sender: userId,
               roomId,
               uuid: uniqueId,

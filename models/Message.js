@@ -13,7 +13,7 @@ const Message = new mongoose.Schema({
   messageType: {
     type: String,
     required: true,
-    enum: ["text", "image", "file", "call"] // Các loại tin nhắn được hỗ trợ
+    enum: ["text", "image", "file", "call", "document"] // Các loại tin nhắn được hỗ trợ
   },
   photo: String, // Đường dẫn của ảnh (nếu có)
   file: String,
