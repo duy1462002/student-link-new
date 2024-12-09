@@ -3,6 +3,7 @@ export const chatService = {
   getMessagesForRoom,
   sendMessage,
   sendImage,
+  sendFile,
   readMessages,
   call,
   answer
@@ -96,6 +97,22 @@ function sendImage(data) {
   };
 
   return fetch("/api/chat/sendImage/", requestOptions)
+    .then(handleResponse)
+    .then(res => {
+      return res;
+    });
+}
+
+function sendFile(data) {
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      Authorization: JSON.parse(localStorage.getItem("user")).token
+    },
+    body: data
+  };
+
+  return fetch("/api/chat/sendFile/", requestOptions)
     .then(handleResponse)
     .then(res => {
       return res;

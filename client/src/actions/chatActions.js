@@ -9,6 +9,7 @@ export const chatActions = {
   getMessagesForRoom,
   sendMessage,
   sendImage,
+  sendFile,
   newMessage,
   readMessages,
   changeActivityStatus,
@@ -144,6 +145,27 @@ function sendImage(data, message) {
     dispatch(request({ ...message, sent: false }));
 
     chatService.sendImage(data).then(
+      response => {
+        dispatch(success(response.message));
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  };
+  function request(message) {
+    return { type: chatConstants.SEND_MESSAGE_REQUEST, message };
+  }
+  function success(message) {
+    return { type: chatConstants.SEND_MESSAGE_SUCCESS, message };
+  }
+}
+
+function sendFile(data, message) {
+  return dispatch => {
+    dispatch(request({ ...message, sent: false }));
+
+    chatService.sendFile(data).then(
       response => {
         dispatch(success(response.message));
       },

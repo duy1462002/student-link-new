@@ -6,53 +6,57 @@ const messageHandler = require("../handlers/messageHandler");
 const path = require("path");
 const uuidv4 = require("uuid/v4");
 const multer = require("multer");
+const Jimp = require("jimp");
+const fs = require("fs");
 
 // Check File Type
-function checkFileType(file, cb) {
-  // Allowed ext
-  const filetypes = /jpeg|jpg|png|gif/;
-  // Check ext
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  // Check mime
-  const mimetype = filetypes.test(file.mimetype);
-
-  if (mimetype && extname) {
-    return cb(null, true);
-  } else {
-    cb(new Error("Only images are allowed"));
-  }
-}
-
 const storage = multer.diskStorage({
-  //multers disk storage settings
   destination: (req, file, cb) => {
-    cb(null, "./public/images/chat-images/");
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split("/")[1];
-    cb(null, uuidv4() + "." + ext);
-  }
-});
+    let destinationPath;
 
-const upload = multer({
-  //multer settings
-  storage: storage,
-  fileFilter: function(req, file, cb) {
-    checkFileType(file, cb);
-    messageHandler.sendImageMessageRequest(req, {
-      message: {
-        sender: req.userData.userId,
-        value: "Image",
-        roomId: req.body.roomId,
-        uuid: req.body.uuid
-      },
-      receiver: JSON.parse(req.body.receiver)
+    if (file.mimetype.startsWith("image/")) {
+      destinationPath = path.join(__dirname, "..", "public", "images", "chat-images");
+    } else {
+      destinationPath = path.join(__dirname, "..", "public", "documents", "chat-documents");
+    }
+
+    // Kiểm tra và tạo thư mục nếu không tồn tại
+    fs.mkdir(destinationPath, { recursive: true }, (err) => {
+      if (err) throw err;
+      cb(null, destinationPath);
     });
   },
-  limits: {
-    fileSize: 10485760 //10 MB
-  }
-}).single("photo");
+  filename: (req, file, cb) => {
+    const timestamp = Date.now();
+    const ext = path.extname(file.originalname);
+    const filename = `${timestamp}${ext}`;
+    cb(null, filename);
+  },
+});
+
+// Cấu hình multer với các giới hạn và kiểm tra file
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 * 10 }, // Giới hạn kích thước tệp: 10MB
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = [
+      "image/",
+      "application/pdf",
+      "text/plain",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    if (allowedTypes.some((type) => file.mimetype.startsWith(type))) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only images, PDFs, and documents (txt, doc, docx) are allowed"));
+    }
+  },
+}).fields([
+  { name: "image", maxCount: 1 },
+  { name: "document", maxCount: 1 },
+]);
 
 exports.upload = (req, res, next) => {
   upload(req, res, err => {
@@ -60,14 +64,25 @@ exports.upload = (req, res, next) => {
       return res.status(400).json({ message: err.message });
     }
 
-    if (!req.file) {
+    if (!req.files || (!req.files.image && !req.files.document)) {
       return res.status(400).json({ message: "Please upload a file" });
     }
 
-    req.body.photo = req.file.filename;
+    const file = req.files.image ? req.files.image[0] : req.files.document[0];
+    const isImage = /jpeg|jpg|png|gif/.test(file.mimetype);
+    
+    req.body.fileType = isImage ? "image" : "document";
+    
+    if (isImage) {
+      req.body.photo = file.filename;
+    } else {
+      req.body.document = file.filename;
+    }
+
     next();
   });
 };
+
 
 exports.createImageMessage = (req, res) => {
   new Message({
@@ -88,6 +103,38 @@ exports.createImageMessage = (req, res) => {
           console.log(err.message);
         });
       messageHandler.sendImageMessage(req, {
+        message: { ...result.toObject(), uuid: req.body.uuid },
+        receiver: JSON.parse(req.body.receiver)
+      });
+      res
+        .status(200)
+        .json({ message: { ...result.toObject(), uuid: req.body.uuid } });
+    })
+    .catch(err => {
+      console.log(err.message);
+      res.status(500).json({ message: err.message });
+    });
+};
+
+exports.createFileMessage = (req, res) => {
+  new Message({
+    roomId: req.body.roomId,
+    sender: req.userData.userId,
+    receiver: JSON.parse(req.body.receiver)._id,
+    file: req.body.document,
+    messageType: "document"
+  })
+    .save()
+    .then(result => {
+      ChatRoom.findByIdAndUpdate(
+        { _id: req.body.roomId },
+        { $inc: { messages: 1 } }
+      )
+        .then(result => console.log(result))
+        .catch(err => {
+          console.log(err.message);
+        });
+      messageHandler.sendFileMessage(req, {
         message: { ...result.toObject(), uuid: req.body.uuid },
         receiver: JSON.parse(req.body.receiver)
       });
@@ -226,3 +273,6 @@ exports.answer = (req, res) => {
   });
   res.status(200).json({});
 };
+
+
+

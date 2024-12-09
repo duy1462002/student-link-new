@@ -73,6 +73,22 @@ exports.sendImage = (req, res, next) => {
   next();
 };
 
+exports.sendFile = (req, res, next) => {
+  const schema = Joi.object({
+    roomId: Joi.objectId().required(),
+    uuid: Joi.string()
+      .guid()
+      .required(),
+    receiver: Joi.objectId().required()
+  });
+  const { roomId, uuid, receiver } = req.body;
+  const { error } = schema.validate({ roomId, uuid, receiver });
+  if (error) {
+    return res.status(400).json({ message: error.message });
+  }
+  next();
+};
+
 exports.handleCall = (req, res, next) => {
   const schema = Joi.object({
     roomId: Joi.objectId().required(),

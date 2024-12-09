@@ -45,7 +45,6 @@ class DiscussionPage extends Component {
     const feedPosts = posts.map((post) => (
       <Post key={post._id} post={{ ...post, feed: true }} />
     ));
-    console.log(posts);
     
 
     return (
