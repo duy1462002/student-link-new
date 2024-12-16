@@ -16,6 +16,7 @@ import { newUsers } from "./newUsersReducer";
 import { passwordReset } from "./passwordResetReducer";
 import { userConstants } from "../_constants/userConstants";
 import { groups } from "./groupReducer";
+import { zoom } from "./zoomReducer";
 
 const appReducer = combineReducers({
   post,
@@ -32,7 +33,8 @@ const appReducer = combineReducers({
   socket,
   postUpload,
   chat,
-  groups
+  groups,
+  zoom
 });
 
 const rootReducer = (state, action) => {

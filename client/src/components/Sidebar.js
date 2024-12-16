@@ -164,7 +164,7 @@ class Sidebar extends Component {
             >
               <li className="flex items-center justify-between px-4">
                 <h1 className="text-2xl px-[16px] py-[8px] font-semibold text-center relative flex-1">
-                  Community
+                  Groups
                 </h1>
                 <Link
                   to="/add-group"
@@ -215,7 +215,7 @@ class Sidebar extends Component {
           </div>
         </div>
 
-        <div className="overflow-hidden bg-white  flex flex-col  mt-5 shadow-lg h-auto text-gray-600 transition-all duration-300 border-none z-10 sidebar card-border-primary">
+        {/* <div className="overflow-hidden bg-white  flex flex-col  mt-5 shadow-lg h-auto text-gray-600 transition-all duration-300 border-none z-10 sidebar card-border-primary">
           <div className="overflow-y-auto overflow-x-hidden flex flex-col justify-between flex-grow">
             <ul
               className={`flex flex-col gap-[8px] mb-[12px] relative ${
@@ -273,7 +273,7 @@ class Sidebar extends Component {
               </div>
             </ul>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }

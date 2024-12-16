@@ -98,6 +98,7 @@ const chatRouter = require("./routes/chat");
 const groupRouter = require("./routes/group");
 const roleRouter = require("./routes/role");
 const orgRouter = require("./routes/organization");
+const zoomRoutes = require('./routes/zoom');
 
 app.use(helmet());
 if (process.env.NODE_ENV === "production") {
@@ -125,6 +126,7 @@ app.use("/api/chat/", chatRouter);
 app.use("/api/group/", groupRouter);
 app.use("/api/role/", roleRouter);
 app.use("/api/org/", orgRouter);
+app.use('/api/zoom/', zoomRoutes);
 
 app.get("/auth/reset/password/:jwt", function (req, res) {
   return res.status(404).json({ message: "go to port 3000" });

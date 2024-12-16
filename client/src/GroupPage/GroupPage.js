@@ -4,6 +4,7 @@ import DiscussionPage from "./DiscussionGroup";
 import AboutGroup from "./AboutGroup";
 import MemberPage from "./MemberPage";
 import MediaGroup from "./MediaGroup";
+import MeetingPage from "./MeetingPage"
 import AddMemberModal from "../components/Group/AddMemberModal";
 import { groupActions } from "../actions/groupActions";
 import { connect } from "react-redux";
@@ -153,6 +154,14 @@ class GroupPage extends Component {
                     Giới thiệu
                   </Link>
                   <Link
+                    to={`${url}/meetings`}
+                    className={`${
+                      pathname === `${url}/meetings` ? "tab-active" : ""
+                    } group-tab-item`}
+                  >
+                    Meetings
+                  </Link>
+                  <Link
                     to={`${url}/discussion`}
                     className={`${
                       pathname === `${url}/discussion` ? "tab-active" : ""
@@ -185,6 +194,7 @@ class GroupPage extends Component {
                 <Route path={`${path}/discussion`} component={DiscussionPage} />
                 <Route path={`${path}/members`} component={MemberPage} />
                 <Route path={`${path}/media`} component={MediaGroup} />
+                <Route path={`${path}/meetings`} component={MeetingPage} />
               </Switch>
             </div>
           </Fragment>
