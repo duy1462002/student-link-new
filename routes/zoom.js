@@ -9,4 +9,6 @@ router.post("/link", checkAuth, zoomController.getMeetingLink);
 
 router.post("/meetings", checkAuth, zoomController.getMeetingsByGroup);
 
+router.post('/delete-meeting', checkAuth, zoomController.deleteMeeting);
+
 module.exports = router;

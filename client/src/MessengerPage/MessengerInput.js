@@ -206,7 +206,7 @@ class MessengerInput extends Component {
             />
             <button
               className="top-1 !bg-transparent !mr-0 !px-3 !py-2 absolute"
-              style={{ right: "145px", top: "4px" }}
+              style={{ right: "100px", top: "4px" }}
             >
               <i className="fa-solid fa-paper-plane text-xl text-[#591bc5] hover:text-purple-950 transition"></i>
             </button>

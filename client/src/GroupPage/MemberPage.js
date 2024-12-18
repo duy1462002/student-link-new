@@ -61,11 +61,11 @@ class MemberPage extends Component {
       return (
         <div className="bg-white rounded-lg mt-[14px] p-4 w-2/3">
           <h1 className="text-xl font-semibold ">
-            Thành viên:{" "}
+            Members:{" "}
             <span className="font-normal">{currentGroup.members.length}</span>
           </h1>
           <p className="text-xl py-4">
-            Các thanh viên tham gia nhóm này sẽ hiển thị tại đây
+            Members of this group will be visible here
           </p>
           {members.map((member) => {
             if (currentGroupAdminsArray.includes(member._id)) {
@@ -91,7 +91,7 @@ class MemberPage extends Component {
                         {member._id === user._id && "(You)"}
                       </h1>
                       <span className="text-lg font-semibold">
-                        Quản trị viên
+                        {member._id === groupOwner ? 'Group owner' : 'Admin'}
                       </span>
                     </div>
                   </div>

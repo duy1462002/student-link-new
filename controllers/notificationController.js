@@ -7,10 +7,10 @@ exports.readNotifications = (req, res) => {
     { $set: { read: true } },
     { multi: true }
   )
-    .then(result => {
+    .then((result) => {
       res.status(200).json({ read: "notifications" });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       res.status(400).json({ msg: err.message });
     });
@@ -26,8 +26,8 @@ exports.getNotifications = (req, res) => {
           notifications: [
             {
               $match: {
-                receiver: mongoose.Types.ObjectId(req.userData.userId)
-              }
+                receiver: mongoose.Types.ObjectId(req.userData.userId),
+              },
             },
             { $sort: { createdAt: -1 } },
             { $limit: 10 },
@@ -36,32 +36,40 @@ exports.getNotifications = (req, res) => {
                 from: "users",
                 localField: "sender",
                 foreignField: "_id",
-                as: "sender"
-              }
+                as: "sender",
+              },
             },
             {
               $lookup: {
                 from: "posts",
                 localField: "post",
                 foreignField: "_id",
-                as: "post"
-              }
+                as: "post",
+              },
             },
             {
               $lookup: {
                 from: "comments",
                 localField: "comment",
                 foreignField: "_id",
-                as: "comment"
-              }
+                as: "comment",
+              },
             },
             {
               $lookup: {
                 from: "replies",
                 localField: "reply",
                 foreignField: "_id",
-                as: "reply"
-              }
+                as: "reply",
+              },
+            },
+            {
+              $lookup: {
+                from: "meetings", // Tên của bảng meetings trong cơ sở dữ liệu
+                localField: "meetingId", // Trường meeting chứa ObjectId của cuộc họp
+                foreignField: "_id", // Trường _id trong bảng meetings
+                as: "meetingId", // Kết quả sẽ được lưu vào trường "meeting"
+              },
             },
             {
               $project: {
@@ -72,23 +80,26 @@ exports.getNotifications = (req, res) => {
                 post: 1,
                 comment: 1,
                 reply: 1,
+                link: 1,
+                groupId: 1,
+                meetingId: 1,
                 createdAt: 1,
                 "sender._id": 1,
                 "sender.username": 1,
-                "sender.profilePicture": 1
-              }
-            }
+                "sender.profilePicture": 1,
+              },
+            },
           ],
           total: [
             {
               $match: {
-                receiver: mongoose.Types.ObjectId(req.userData.userId)
-              }
+                receiver: mongoose.Types.ObjectId(req.userData.userId),
+              },
             },
-            { $group: { _id: null, count: { $sum: 1 } } }
-          ]
-        }
-      }
+            { $group: { _id: null, count: { $sum: 1 } } },
+          ],
+        },
+      },
     ];
   } else {
     query = [
@@ -97,12 +108,12 @@ exports.getNotifications = (req, res) => {
           $and: [
             {
               _id: {
-                $lt: mongoose.Types.ObjectId(req.body.lastId)
+                $lt: mongoose.Types.ObjectId(req.body.lastId),
               },
-              receiver: mongoose.Types.ObjectId(req.userData.userId)
-            }
-          ]
-        }
+              receiver: mongoose.Types.ObjectId(req.userData.userId),
+            },
+          ],
+        },
       },
       { $sort: { createdAt: -1 } },
       { $limit: 10 },
@@ -111,32 +122,40 @@ exports.getNotifications = (req, res) => {
           from: "users",
           localField: "sender",
           foreignField: "_id",
-          as: "sender"
-        }
+          as: "sender",
+        },
       },
       {
         $lookup: {
           from: "posts",
           localField: "post",
           foreignField: "_id",
-          as: "post"
-        }
+          as: "post",
+        },
       },
       {
         $lookup: {
           from: "comments",
           localField: "comment",
           foreignField: "_id",
-          as: "comment"
-        }
+          as: "comment",
+        },
       },
       {
         $lookup: {
           from: "replies",
           localField: "reply",
           foreignField: "_id",
-          as: "reply"
-        }
+          as: "reply",
+        },
+      },
+      {
+        $lookup: {
+          from: "meetings", // Tên của bảng meetings trong cơ sở dữ liệu
+          localField: "meetingId", // Trường meeting chứa ObjectId của cuộc họp
+          foreignField: "_id", // Trường _id trong bảng meetings
+          as: "meetingId", // Kết quả sẽ được lưu vào trường "meeting"
+        },
       },
       {
         $project: {
@@ -147,24 +166,27 @@ exports.getNotifications = (req, res) => {
           post: 1,
           comment: 1,
           reply: 1,
+          link: 1,
+          groupId: 1,
+          meetingId: 1,
           createdAt: 1,
           "sender._id": 1,
           "sender.username": 1,
-          "sender.profilePicture": 1
-        }
-      }
+          "sender.profilePicture": 1,
+        },
+      },
     ];
   }
 
   Notification.aggregate(query)
-    .then(data => {
+    .then((data) => {
       if (req.body.initialFetch && !data[0].total.length) {
         data[0].total.push({ _id: null, count: 0 }); //if user has no posts
       }
 
       res.status(200).json({ data });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err.message);
       res.status(500).json({ message: err.message });
     });

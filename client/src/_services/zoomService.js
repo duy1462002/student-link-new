@@ -3,6 +3,7 @@ export const zoomService = {
   scheduleMeeting,
   getMeetingLink,
   getMeetings,
+  deleteMeeting
 };
 
 function logout() {
@@ -35,7 +36,7 @@ function scheduleMeeting(data) {
       Authorization: JSON.parse(localStorage.getItem("user")).token,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ data }),
+    body: JSON.stringify(data),
   };
   return fetch("/api/zoom/schedule", requestOptions)
     .then(handleResponse)
@@ -70,6 +71,22 @@ function getMeetings(groupId) {
     body: JSON.stringify({ groupId }),
   };
   return fetch("/api/zoom/meetings", requestOptions)
+    .then(handleResponse)
+    .then((res) => {
+      return res;
+    });
+}
+
+function deleteMeeting(meetingId) {
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      Authorization: JSON.parse(localStorage.getItem("user")).token,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ meetingId }),
+  };
+  return fetch("/api/zoom/delete-meeting", requestOptions)
     .then(handleResponse)
     .then((res) => {
       return res;

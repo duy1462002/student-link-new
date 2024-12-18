@@ -220,6 +220,35 @@ exports.sendCommentMentionNotification = params => {
   });
 };
 
+exports.sendNewMeetingNotification = (params) => {
+  const { req, groupMembers, user, notification } = params; // `groupMembers` là danh sách thành viên trong nhóm
+  const io = req.app.get("socketio");
+
+  const { _id, read, type, createdAt, groupId } = notification;
+  const { profilePicture, username } = user;
+
+  groupMembers.forEach((member) => {
+    if (idToString(member.user) !== idToString(req.userData.userId)) {
+      io.sockets.in(member.user).emit("newNotification", {
+        notification: {
+          _id,
+          read,
+          sender: [
+            {
+              profilePicture,
+              username,
+            },
+          ],
+          link: `/group/${groupId}/meetings`,
+          type,
+          createdAt,
+        },
+      });
+    }
+  });
+};
+
+
 exports.sendNewUser = params => {
   const { req, user } = params;
   const io = req.app.get("socketio");

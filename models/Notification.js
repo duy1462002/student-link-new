@@ -9,7 +9,10 @@ const NotificationSchema = new mongoose.Schema({
   type: String,
   post: { type: mongoose.Schema.Types.ObjectId, ref: "Post" },
   comment: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
-  reply: { type: mongoose.Schema.Types.ObjectId, ref: "Reply" }
+  reply: { type: mongoose.Schema.Types.ObjectId, ref: "Reply" },
+  groupId: { type: mongoose.Schema.Types.ObjectId, ref: "Group" },
+  meetingId: { type: mongoose.Schema.Types.ObjectId, ref: "Meeting" },
+  link: { type: String },
 });
 
 module.exports = mongoose.model("Notification", NotificationSchema);

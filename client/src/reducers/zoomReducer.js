@@ -17,7 +17,7 @@ export function zoom(state = initialState, action) {
     case zoomConstant.GET_MEETING_SUCCESS:
       return {
         ...state,
-        meetings: [...state.meetings, ...action.response],
+        meetings: [...action.response],
         isLoading: false,
       };
 

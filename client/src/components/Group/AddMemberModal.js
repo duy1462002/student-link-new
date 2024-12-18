@@ -102,7 +102,7 @@ function AddMemberModal({
       trigger={
         <button className="group-btn rounded-lg">
           <i className="fa-solid fa-plus"></i>
-          Mời
+          Invite
         </button>
       }
     >

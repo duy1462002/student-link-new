@@ -6,6 +6,7 @@ const meetingSchema = new mongoose.Schema({
   start_time: { type: Date, required: true },
   duration: { type: Number, required: true },
   agenda: { type: String, default: '' },
+  password: { type: String, required: true },
   groupId: { type: mongoose.Schema.ObjectId, ref: 'Group', required: true },
 }, { timestamps: true });
 

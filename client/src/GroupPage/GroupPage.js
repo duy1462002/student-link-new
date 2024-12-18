@@ -129,9 +129,9 @@ class GroupPage extends Component {
                   </h1>
                   <div className="flex items-center gap-x-[8px] text-[14px]">
                     <i className="fa-solid fa-lock"></i>
-                    <span>Nhóm riêng tư</span>
+                    <span>Private Group</span>
                     <span className="font-semibold">
-                      {currentGroup.members.length} thành viên
+                      {currentGroup.members.length} members
                     </span>
                   </div>
                 </div>
@@ -139,7 +139,7 @@ class GroupPage extends Component {
                   <AddMemberModal />
                   <button className="group-btn rounded-lg">
                     <i className="fa-solid fa-user-group"></i>
-                    Đã tham gia
+                    Participated
                   </button>
                 </div>
               </div>
@@ -151,7 +151,7 @@ class GroupPage extends Component {
                       pathname === `${url}/about` ? "tab-active" : ""
                     } group-tab-item`}
                   >
-                    Giới thiệu
+                    About
                   </Link>
                   <Link
                     to={`${url}/meetings`}
@@ -167,7 +167,7 @@ class GroupPage extends Component {
                       pathname === `${url}/discussion` ? "tab-active" : ""
                     } group-tab-item`}
                   >
-                    Thảo luận
+                    Feeds
                   </Link>
                   <Link
                     to={`${url}/members`}
@@ -175,7 +175,7 @@ class GroupPage extends Component {
                       pathname === `${url}/members` ? "tab-active" : ""
                     } group-tab-item`}
                   >
-                    Thành viên
+                    Members
                   </Link>
                   <Link
                     to={`${url}/media`}
@@ -183,7 +183,7 @@ class GroupPage extends Component {
                       pathname === `${url}/media` ? "tab-active" : ""
                     } group-tab-item`}
                   >
-                    File phương tiện
+                    Gallery
                   </Link>
                 </div>
               </div>
