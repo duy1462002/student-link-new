@@ -303,7 +303,7 @@ function meetingNotification({ _id, createdAt, sender, link }) {
           <Feed.User as={Link} to={"/" + sender[0].username}>
             {sender[0].username}
           </Feed.User>{" "}
-          <span style={{ fontWeight: "normal" }}>create a meeting, please check</span>
+          <span style={{ fontWeight: "normal" }}>created a meeting, please check</span>
           <Feed.Date>{dayjs(createdAt).fromNow()}</Feed.Date>
         </Feed.Summary>
       </Feed.Content>

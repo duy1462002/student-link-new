@@ -21,12 +21,12 @@ class GroupPage extends Component {
   }
 
   handleScroll = () => {
-    const scrollPosition = window.scrollY;
-    if (scrollPosition > 300) {
-      this.setState({ isFixed: true });
-    } else {
-      this.setState({ isFixed: false });
-    }
+    // const scrollPosition = window.scrollY;
+    // if (scrollPosition > 300) {
+    //   this.setState({ isFixed: true });
+    // } else {
+    //   this.setState({ isFixed: false });
+    // }
   };
 
   componentDidMount() {
