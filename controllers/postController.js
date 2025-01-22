@@ -149,9 +149,10 @@ exports.upload = (req, res, next) => {
 exports.getPosts = (req, res) => {
   let query;
 
-  const followingsAndSelf = [...req.body.followings, req.userData.userId];
-  console.log('GET userId', req.userData.userId);
-  console.log('GET followings', req.body.followings);
+  const followingsAndSelf = [
+    ...req.body.followings.map(id => mongoose.Types.ObjectId(id)), 
+    mongoose.Types.ObjectId(req.userData.userId)
+  ];
   
   if (req.body.initialFetch) {
     query = [
