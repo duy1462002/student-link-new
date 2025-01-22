@@ -149,6 +149,10 @@ exports.upload = (req, res, next) => {
 exports.getPosts = (req, res) => {
   let query;
 
+  const followingsAndSelf = [...req.body.followings, req.userData.userId];
+  console.log('GET userId', req.userData.userId);
+  console.log('GET followings', req.body.followings);
+  
   if (req.body.initialFetch) {
     query = [
       {
@@ -158,7 +162,7 @@ exports.getPosts = (req, res) => {
               $match: {
                 //author: { $in: req.body.followings }
                 $and: [
-                  { author: { $in: req.body.followings } },
+                  { author: { $in: followingsAndSelf } },
                   {
                     $or: [
                       { group: { $exists: true, $eq: null } },
@@ -197,7 +201,7 @@ exports.getPosts = (req, res) => {
             // Filter out documents without a price e.g., _id: 7
             {
               $match: {
-                author: { $in: req.body.followings },
+                author: { $in: followingsAndSelf },
               },
             },
             { $group: { _id: null, count: { $sum: 1 } } },
@@ -214,7 +218,7 @@ exports.getPosts = (req, res) => {
               _id: {
                 $lt: mongoose.Types.ObjectId(req.body.lastId),
               },
-              author: { $in: req.body.followings },
+              author: { $in: followingsAndSelf },
             },
           ],
         },
