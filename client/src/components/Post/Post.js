@@ -16,6 +16,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import SpinnerLoading from "../SpinnerLoading";
 import PostCommentsFeed from "../Comments/PostCommentsFeed";
+import toast from "react-hot-toast";
 
 dayjs.extend(relativeTime);
 
@@ -89,6 +90,8 @@ class Post extends Component {
   deletePost = () => {
     const { dispatch, post } = this.props;
     dispatch(postActions.deletePost(post._id));
+    dispatch(postActions.fetchPosts({ initialFetch: true }));
+    toast.success('Delete post successfully');
   };
 
   handleChange = (e, { name, value }) => {
@@ -112,7 +115,7 @@ class Post extends Component {
   };
 
   render() {
-    const { post, _id, username, profilePicture } = this.props;
+    const { post, _id, username, profilePicture, deleting } = this.props;
     const { open, optionsLoggedIn, optionsNotLoggedIn, value, showTags } =
       this.state;
     const isFeedMarginBottom = post.feed ? "2rem" : "0";
@@ -198,16 +201,19 @@ class Post extends Component {
                 <p>Are you sure you want to delete your post</p>
               </Modal.Content>
               <Modal.Actions>
-                <Button negative onClick={this.close}>
+                <Button onClick={this.close}>
                   No
                 </Button>
                 <Button
-                  positive
-                  icon="checkmark"
-                  labelPosition="right"
-                  content="Yes"
+                  className="!bg-[#591bc5] !text-white relative !w-24 h-[32px]"
                   onClick={this.deletePost}
-                />
+                >
+                  {deleting  ? (
+                      <SpinnerLoading size={36} bgColor="#591BC5" />
+                    ) : (
+                      "Yes"
+                    )}
+                </Button>
               </Modal.Actions>
             </Modal>
             {post.author[0]._id === _id ? (
@@ -374,11 +380,13 @@ class Post extends Component {
 
 const mapStateToProps = (state) => {
   const { _id, username, profilePicture } = state.user.data;
+
   return {
     _id,
     username,
     profilePicture,
     comments: state.comments,
+    deleting: state.post.deleting
   };
 };
 

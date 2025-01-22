@@ -34,24 +34,24 @@ class DeletePostModal extends Component {
           <p>Are you sure you want to delete your Post</p>
         </Modal.Content>
         <Modal.Actions>
-          <Button negative onClick={this.close}>
+          <Button negative onClick={this.close} className="">
             No
           </Button>
           <Button
             positive
-            icon="checkmark"
-            labelPosition="right"
-            content="Yes"
+            className="!bg-[#591bc5] !text-white relative w-50 h-[32px]"
             onClick={this.deletePost}
-          />
+          >
+            Yes
+          </Button>
         </Modal.Actions>
       </Modal>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  post: state.post.posts
+const mapStateToProps = (state) => ({
+  post: state.post.posts,
 });
 
 const connectedDeletePostModal = connect(mapStateToProps)(DeletePostModal);

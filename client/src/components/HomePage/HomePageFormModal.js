@@ -8,13 +8,15 @@ import {
   ModalHeader,
   Popup,
 } from "semantic-ui-react";
-import { groupActions } from "../../actions/groupActions";
 import SpinnerLoading from "../SpinnerLoading";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../../reusable/cropImage";
 import uuid from "uuid";
 import { AutosuggestExample } from "../Autosuggestion";
 import { postActions } from "../../actions/postActions";
+import MapGroup from "../Group/MapGroup";
+import "mapbox-gl/dist/mapbox-gl.css";
+import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 class HomePageFormModal extends Component {
   constructor(props) {
@@ -147,7 +149,6 @@ class HomePageFormModal extends Component {
       this.state;
     const { dispatch, divs } = this.props;
 
-
     // dispatch(groupActions.addGroupPost(data));
     const formData = new FormData();
     formData.append("description", description);
@@ -157,6 +158,7 @@ class HomePageFormModal extends Component {
     formData.append("coordinates", coordinates);
     formData.append("document", document);
     dispatch(postActions.addPost(formData));
+    dispatch(postActions.fetchPosts({ initialFetch: true }));
   };
 
   componentDidUpdate(prevProps) {
@@ -253,7 +255,7 @@ class HomePageFormModal extends Component {
         trigger={
           <input
             placeholder="Write something..."
-            className="w-2/3 outline-none bg-gray-200 p-4 text-sm rounded-lg"
+            className="w-full outline-none bg-gray-200 p-4 text-sm rounded-lg"
             onClick={this.handleOpen}
           />
         }
@@ -507,7 +509,9 @@ class HomePageFormModal extends Component {
                     }
                   />
                 </div>
-                <div className="py-2 overflow-hidden"></div>
+                <div className="py-2 overflow-hidden">
+                  <MapGroup onLocationSelect={this.handleLocationSelect} />
+                </div>
               </>
             )}
           </form>
