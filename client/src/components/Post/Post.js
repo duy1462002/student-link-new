@@ -17,6 +17,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import SpinnerLoading from "../SpinnerLoading";
 import PostCommentsFeed from "../Comments/PostCommentsFeed";
 import toast from "react-hot-toast";
+import { groupActions } from "../../actions/groupActions";
 
 dayjs.extend(relativeTime);
 
@@ -90,7 +91,8 @@ class Post extends Component {
   deletePost = () => {
     const { dispatch, post } = this.props;
     dispatch(postActions.deletePost(post._id));
-    dispatch(postActions.fetchPosts({ initialFetch: true }));
+    // dispatch(postActions.fetchPosts({ initialFetch: true }));
+
     toast.success('Delete post successfully');
   };
 
